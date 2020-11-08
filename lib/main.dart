@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(App());
+  runApp(MaterialApp(
+    title: 'My Routed App.',
+    initialRoute: '/',
+    routes: {
+      '/' : (context){return App();},
+      '/real' : (context){return MainApp();}
+    },
+  ));
 }
 
 class App extends StatefulWidget {
@@ -66,27 +73,39 @@ class AppState extends State {
               _formKey.currentState.save();
               print("Username: ${_loginData.username}");
               print("Password: ${_loginData.password}");
+              Navigator.pushNamed(context, "/real");
             }
+
           },
         )
       ];
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'First Form Project',
-      home: Scaffold(
-          body: Container(
-            padding: EdgeInsets.all(50),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                children: _listOfFields,
-              ),
+
+    return Scaffold(
+        body: Container(
+          padding: EdgeInsets.all(50),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: _listOfFields,
             ),
-          )
+          ),
+        )
+    );
+  }
+}
+
+class MainApp extends StatelessWidget{
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Align(
+        alignment: Alignment.center,
+        child: Text('I am inside the real App!!', style: TextStyle(fontSize: 30, color: Colors.purple),),
       ),
     );
   }
-
 }
