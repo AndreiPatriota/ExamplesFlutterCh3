@@ -1,111 +1,118 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(MaterialApp(
-    title: 'My Routed App.',
-    initialRoute: '/',
-    routes: {
-      '/' : (context){return App();},
-      '/real' : (context){return MainApp();}
-    },
-  ));
+void main(){
+  runApp(App());
 }
 
-class App extends StatefulWidget {
+class App extends StatefulWidget{
   App({Key key}) : super(key: key);
 
   @override
-  AppState createState() {
+  AppState createState(){
     return AppState();
   }
 }
 
-class LoginData {
-  String username = "";
-  String password = "";
-}
-
-class AppState extends State {
-  LoginData _loginData = new LoginData();
+class AppState extends State{
   GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+  var _checkBoxValue = false;
+  var _switchValue = false;
+  var _sliderValue = .3;
+  var _radioValue = 1;
 
-  List get _listOfFields =>
-      <Widget>[
-        TextFormField(
-          keyboardType: TextInputType.emailAddress,
-          validator: (String inputStr) {
-            if (inputStr.length == 0) {
-              return "Please, enter a username";
+  List get listOfFields => <Widget>[
+    Checkbox(
+        value: _checkBoxValue,
+        onChanged: (bool inVal){
+          setState(() {
+            _checkBoxValue = inVal;
+          });
+        }
+    ),
+    Switch(
+        value: _switchValue,
+        onChanged: (bool inVal){
+          setState(() {
+            _switchValue = inVal;
+          });
+        }
+    ),
+    Row(
+      children: [
+        Slider(
+            min: 0,
+            max: 20,
+            value: _sliderValue,
+            onChanged: (num inValue){
+              setState(() {
+                _sliderValue = inValue;
+              });
             }
-            return null;
-          },
-          onSaved: (String inputStr) {
-            _loginData.username = inputStr;
-          },
-          decoration: InputDecoration(
-              hintText: "john@doe.com",
-              labelText: "Username (emMil address)"
-          ),
         ),
-        TextFormField(
-          obscureText: true,
-          validator: (String inputStr) {
-            if (inputStr.length < 10 ||
-                !inputStr.contains('@') ||
-                !inputStr.contains('?')
-            ) {
-              return "Password must be at least 10 characters long";
+        Text(_sliderValue.toStringAsFixed(2))
+      ],
+    ),
+    Row(
+      children: [
+        Radio(
+            value: 1,
+            groupValue: _radioValue,
+            onChanged: (num inVal){
+              setState(() {
+                _radioValue = inVal;
+              });
             }
-            return null;
-          },
-          onSaved: (String inputStr) {
-            _loginData.password = inputStr;
-          },
-          decoration: InputDecoration(
-              hintText: "Password",
-              labelText: "Password"
-          ),
         ),
-        RaisedButton(
-          child: Text('Log In!'),
-          onPressed: () {
-            if (_formKey.currentState.validate()) {
-              _formKey.currentState.save();
-              print("Username: ${_loginData.username}");
-              print("Password: ${_loginData.password}");
-              Navigator.pushNamed(context, "/real");
+        Text('Option 1')
+      ],
+    ),
+    Row(
+      children: [
+        Radio(
+            value: 2,
+            groupValue: _radioValue,
+            onChanged: (num inVal){
+              setState(() {
+                _radioValue = inVal;
+              });
             }
-
-          },
-        )
-      ];
+        ),
+        Text('Option 2')
+      ],
+    ),
+    Row(
+      children: [
+        Radio(
+            value: 3,
+            groupValue: _radioValue,
+            onChanged: (num inVal){
+              setState(() {
+                _radioValue = inVal;
+              });
+            }
+        ),
+        Text('Option 2')
+      ],
+    )
+  ];
 
   @override
   Widget build(BuildContext context) {
-
-    return Scaffold(
+    return MaterialApp(
+      title: 'My newest App',
+      home: Scaffold(
         body: Container(
-          padding: EdgeInsets.all(50),
+          padding: EdgeInsets.all(30),
           child: Form(
             key: _formKey,
             child: Column(
-              children: _listOfFields,
+              children: listOfFields,
             ),
           ),
-        )
+        ),
+      )
     );
   }
+
 }
 
-class MainApp extends StatelessWidget{
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Align(
-        alignment: Alignment.center,
-        child: Text('I am inside the real App!!', style: TextStyle(fontSize: 30, color: Colors.purple),),
-      ),
-    );
-  }
-}
