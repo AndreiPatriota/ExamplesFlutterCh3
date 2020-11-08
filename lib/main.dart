@@ -4,53 +4,89 @@ void main() {
   runApp(App());
 }
 
-class App extends StatefulWidget{
+class App extends StatefulWidget {
   App({Key key}) : super(key: key);
 
   @override
-  AppState createState(){
+  AppState createState() {
     return AppState();
   }
 }
 
-class AppState extends State{
+class LoginData {
+  String username = "";
+  String password = "";
+}
 
-  var _currentStep = 0;
-  final _listOfSteps = [
-    Step(
-      title: Text('Get Ready'),
-      isActive: true,
-      content: Text('Let us begin..')
-    ),
-    Step(
-        title: Text('Get Set'),
-        isActive: false,
-        content: Text('Ok, just a little more...')
-    ),
-    Step(
-        title: Text('Go!'),
-        isActive: true,
-        content: Text("And, we're done")
-    )
-  ];
+class AppState extends State {
+  LoginData _loginData = new LoginData();
+  GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+
+  List get _listOfFields =>
+      <Widget>[
+        TextFormField(
+          keyboardType: TextInputType.emailAddress,
+          validator: (String inputStr) {
+            if (inputStr.length == 0) {
+              return "Please, enter a username";
+            }
+            return null;
+          },
+          onSaved: (String inputStr) {
+            _loginData.username = inputStr;
+          },
+          decoration: InputDecoration(
+              hintText: "john@doe.com",
+              labelText: "Username (emMil address)"
+          ),
+        ),
+        TextFormField(
+          obscureText: true,
+          validator: (String inputStr) {
+            if (inputStr.length < 10 ||
+                !inputStr.contains('@') ||
+                !inputStr.contains('?')
+            ) {
+              return "Password must be at least 10 characters long";
+            }
+            return null;
+          },
+          onSaved: (String inputStr) {
+            _loginData.password = inputStr;
+          },
+          decoration: InputDecoration(
+              hintText: "Password",
+              labelText: "Password"
+          ),
+        ),
+        RaisedButton(
+          child: Text('Log In!'),
+          onPressed: () {
+            if (_formKey.currentState.validate()) {
+              _formKey.currentState.save();
+              print("Username: ${_loginData.username}");
+              print("Password: ${_loginData.password}");
+            }
+          },
+        )
+      ];
 
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
-      title: 'Stepper Demo.',
+      title: 'First Form Project',
       home: Scaffold(
-        appBar: AppBar(
-          title: Text('This is a Stepper Widget Demo!'),
-        ),
-        body : Stepper(
-          type: StepperType.vertical,
-          currentStep: _currentStep,
-          onStepContinue: _currentStep < 2  ? () => setState((){_currentStep+=1;}): null,
-          onStepCancel: _currentStep > 0 ?() => setState((){_currentStep-=1;}):null,
-          steps: _listOfSteps,
-        )
+          body: Container(
+            padding: EdgeInsets.all(50),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: _listOfFields,
+              ),
+            ),
+          )
       ),
     );
   }
+
 }
