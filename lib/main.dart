@@ -1,118 +1,86 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
-void main(){
-  runApp(App());
-}
+void main() => runApp(App());
 
-class App extends StatefulWidget{
-  App({Key key}) : super(key: key);
 
-  @override
-  AppState createState(){
-    return AppState();
-  }
-}
-
-class AppState extends State{
-  GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
-  var _checkBoxValue = false;
-  var _switchValue = false;
-  var _sliderValue = .3;
-  var _radioValue = 1;
-
-  List get listOfFields => <Widget>[
-    Checkbox(
-        value: _checkBoxValue,
-        onChanged: (bool inVal){
-          setState(() {
-            _checkBoxValue = inVal;
-          });
-        }
-    ),
-    Switch(
-        value: _switchValue,
-        onChanged: (bool inVal){
-          setState(() {
-            _switchValue = inVal;
-          });
-        }
-    ),
-    Row(
-      children: [
-        Slider(
-            min: 0,
-            max: 20,
-            value: _sliderValue,
-            onChanged: (num inValue){
-              setState(() {
-                _sliderValue = inValue;
-              });
-            }
-        ),
-        Text(_sliderValue.toStringAsFixed(2))
-      ],
-    ),
-    Row(
-      children: [
-        Radio(
-            value: 1,
-            groupValue: _radioValue,
-            onChanged: (num inVal){
-              setState(() {
-                _radioValue = inVal;
-              });
-            }
-        ),
-        Text('Option 1')
-      ],
-    ),
-    Row(
-      children: [
-        Radio(
-            value: 2,
-            groupValue: _radioValue,
-            onChanged: (num inVal){
-              setState(() {
-                _radioValue = inVal;
-              });
-            }
-        ),
-        Text('Option 2')
-      ],
-    ),
-    Row(
-      children: [
-        Radio(
-            value: 3,
-            groupValue: _radioValue,
-            onChanged: (num inVal){
-              setState(() {
-                _radioValue = inVal;
-              });
-            }
-        ),
-        Text('Option 2')
-      ],
-    )
-  ];
-
+class App extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'My newest App',
-      home: Scaffold(
-        body: Container(
-          padding: EdgeInsets.all(30),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: listOfFields,
-            ),
+      title: 'My App',
+      home: Home(),
+    );
+  }
+
+
+}
+
+class Home extends StatefulWidget{
+  Home({Key key}) : super(key: key);
+
+  @override
+  HomeState createState() => HomeState();
+}
+
+class HomeState extends State{
+
+  DateTime _selectedDate = DateTime.now();
+  TimeOfDay _selectedTime = TimeOfDay.now();
+  
+  Future<void> _selectDate(inContext) async{
+    DateTime newSelectedDate = await showDatePicker(
+        context: inContext,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2017),
+        lastDate: DateTime(2021)
+    );
+
+    _selectedDate = newSelectedDate != null ? newSelectedDate : _selectedDate;
+  }
+
+  Future<void> _selectTime(inContext) async{
+    TimeOfDay newSelectedTime = await showTimePicker(
+        context: inContext,
+        initialTime: TimeOfDay.now()
+    );
+
+    _selectedTime = newSelectedTime != null ? newSelectedTime : _selectedTime;
+  }
+  
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.blueGrey[900],
+      body: Column(
+        children: [
+          Container(height: 50,),
+          RaisedButton(
+              child: Text('Date Picker', style: TextStyle(color: Colors.deepOrange, fontSize: 18),),
+              onPressed: () async{
+                await _selectDate(context);
+                setState(() {});
+              }),
+          RaisedButton(
+              child: Text('Time Picker', style: TextStyle(color: Colors.deepOrange, fontSize: 18),),
+              onPressed: () async{
+                await _selectTime(context);
+                setState(() {});
+              }),
+          Container(height: 150,),
+          Text(
+              "Date Picked: " + _selectedDate?.day.toString() + "/" + _selectedDate?.month.toString() + "/" + _selectedDate?.year.toString(),
+              style: TextStyle(color: Colors.deepOrangeAccent,fontSize: 26),
           ),
-        ),
-      )
+          Text(
+              "Time Picked: " + _selectedTime.hour.toString() + ":" + _selectedTime.minute.toString(),
+              style: TextStyle(color: Colors.deepOrangeAccent,fontSize: 26),
+          )
+        ],
+      ),
     );
   }
 
 }
-
