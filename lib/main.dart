@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 
 void main() => runApp(App());
 
-
-class App extends StatelessWidget{
+class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -13,42 +12,35 @@ class App extends StatelessWidget{
       home: Home(),
     );
   }
-
-
 }
 
-class Home extends StatefulWidget{
+class Home extends StatefulWidget {
   Home({Key key}) : super(key: key);
 
   @override
   HomeState createState() => HomeState();
 }
 
-class HomeState extends State{
-
+class HomeState extends State {
   DateTime _selectedDate = DateTime.now();
   TimeOfDay _selectedTime = TimeOfDay.now();
-  
-  Future<void> _selectDate(inContext) async{
+
+  Future<void> _selectDate(inContext) async {
     DateTime newSelectedDate = await showDatePicker(
         context: inContext,
         initialDate: DateTime.now(),
         firstDate: DateTime(2017),
-        lastDate: DateTime(2021)
-    );
+        lastDate: DateTime(2021));
 
     _selectedDate = newSelectedDate != null ? newSelectedDate : _selectedDate;
   }
 
-  Future<void> _selectTime(inContext) async{
-    TimeOfDay newSelectedTime = await showTimePicker(
-        context: inContext,
-        initialTime: TimeOfDay.now()
-    );
+  Future<void> _selectTime(inContext) async {
+    TimeOfDay newSelectedTime =
+        await showTimePicker(context: inContext, initialTime: TimeOfDay.now());
 
     _selectedTime = newSelectedTime != null ? newSelectedTime : _selectedTime;
   }
-  
 
   @override
   Widget build(BuildContext context) {
@@ -56,31 +48,71 @@ class HomeState extends State{
       backgroundColor: Colors.blueGrey[900],
       body: Column(
         children: [
-          Container(height: 50,),
-          RaisedButton(
-              child: Text('Date Picker', style: TextStyle(color: Colors.deepOrange, fontSize: 18),),
-              onPressed: () async{
-                await _selectDate(context);
-                setState(() {});
-              }),
-          RaisedButton(
-              child: Text('Time Picker', style: TextStyle(color: Colors.deepOrange, fontSize: 18),),
-              onPressed: () async{
-                await _selectTime(context);
-                setState(() {});
-              }),
-          Container(height: 150,),
-          Text(
-              "Date Picked: " + _selectedDate?.day.toString() + "/" + _selectedDate?.month.toString() + "/" + _selectedDate?.year.toString(),
-              style: TextStyle(color: Colors.deepOrangeAccent,fontSize: 26),
+          Container(
+            height: 50,
+          ),
+          Tooltip(
+            message: 'Tap to pick a date',
+            child: RaisedButton(
+                child: Text(
+                  'Date Picker',
+                  style: TextStyle(color: Colors.deepOrange, fontSize: 18),
+                ),
+                onPressed: () async {
+                  await _selectDate(context);
+                  setState(() {});
+                }),
+          ),
+          Tooltip(
+            message: 'Tap to pick a time',
+            child: RaisedButton(
+                child: Text(
+                  'Time Picker',
+                  style: TextStyle(color: Colors.deepOrange, fontSize: 18),
+                ),
+                onPressed: () async {
+                  await _selectTime(context);
+                  setState(() {});
+                }),
+          ),
+          Container(
+            height: 150,
           ),
           Text(
-              "Time Picked: " + _selectedTime.hour.toString() + ":" + _selectedTime.minute.toString(),
-              style: TextStyle(color: Colors.deepOrangeAccent,fontSize: 26),
-          )
+            "Date Picked: " +
+                _selectedDate?.day.toString() +
+                "/" +
+                _selectedDate?.month.toString() +
+                "/" +
+                _selectedDate?.year.toString(),
+            style: TextStyle(color: Colors.deepOrangeAccent, fontSize: 26),
+          ),
+          Text(
+            "Time Picked: " +
+                _selectedTime.hour.toString() +
+                ":" +
+                _selectedTime.minute.toString(),
+            style: TextStyle(color: Colors.deepOrangeAccent, fontSize: 26),
+          ),
+          Container(
+            height: 50,
+          ),
+          Dismissible(
+              key: GlobalKey(),
+              onDismissed: (direction) {
+                print('See ya!');
+              },
+              child: Container(
+                color: Colors.deepPurple,
+                width: 100,
+                height: 50,
+                child: Text(
+                  'Swipe Me',
+                  style: TextStyle(fontSize: 16, color: Colors.amber),
+                ),
+              ))
         ],
       ),
     );
   }
-
 }
