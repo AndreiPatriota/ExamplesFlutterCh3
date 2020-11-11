@@ -4,115 +4,98 @@ import 'package:flutter/material.dart';
 
 void main() => runApp(App());
 
-class App extends StatelessWidget {
+class App extends StatelessWidget{
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'My App',
-      home: Home(),
-    );
-  }
-}
-
-class Home extends StatefulWidget {
-  Home({Key key}) : super(key: key);
-
-  @override
-  HomeState createState() => HomeState();
-}
-
-class HomeState extends State {
-  DateTime _selectedDate = DateTime.now();
-  TimeOfDay _selectedTime = TimeOfDay.now();
-
-  Future<void> _selectDate(inContext) async {
-    DateTime newSelectedDate = await showDatePicker(
-        context: inContext,
-        initialDate: DateTime.now(),
-        firstDate: DateTime(2017),
-        lastDate: DateTime(2021));
-
-    _selectedDate = newSelectedDate != null ? newSelectedDate : _selectedDate;
-  }
-
-  Future<void> _selectTime(inContext) async {
-    TimeOfDay newSelectedTime =
-        await showTimePicker(context: inContext, initialTime: TimeOfDay.now());
-
-    _selectedTime = newSelectedTime != null ? newSelectedTime : _selectedTime;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.blueGrey[900],
-      body: Column(
-        children: [
-          Container(
-            height: 50,
-          ),
-          Tooltip(
-            message: 'Tap to pick a date',
-            child: RaisedButton(
-                child: Text(
-                  'Date Picker',
-                  style: TextStyle(color: Colors.deepOrange, fontSize: 18),
-                ),
-                onPressed: () async {
-                  await _selectDate(context);
-                  setState(() {});
-                }),
-          ),
-          Tooltip(
-            message: 'Tap to pick a time',
-            child: RaisedButton(
-                child: Text(
-                  'Time Picker',
-                  style: TextStyle(color: Colors.deepOrange, fontSize: 18),
-                ),
-                onPressed: () async {
-                  await _selectTime(context);
-                  setState(() {});
-                }),
-          ),
-          Container(
-            height: 150,
-          ),
-          Text(
-            "Date Picked: " +
-                _selectedDate?.day.toString() +
-                "/" +
-                _selectedDate?.month.toString() +
-                "/" +
-                _selectedDate?.year.toString(),
-            style: TextStyle(color: Colors.deepOrangeAccent, fontSize: 26),
-          ),
-          Text(
-            "Time Picked: " +
-                _selectedTime.hour.toString() +
-                ":" +
-                _selectedTime.minute.toString(),
-            style: TextStyle(color: Colors.deepOrangeAccent, fontSize: 26),
-          ),
-          Container(
-            height: 50,
-          ),
-          Dismissible(
-              key: GlobalKey(),
-              onDismissed: (direction) {
-                print('See ya!');
-              },
-              child: Container(
-                color: Colors.deepPurple,
-                width: 100,
-                height: 50,
-                child: Text(
-                  'Swipe Me',
-                  style: TextStyle(fontSize: 16, color: Colors.amber),
-                ),
-              ))
-        ],
+      home: Scaffold(
+        body: HomeApp(),
       ),
     );
+  }
+}
+
+class HomeApp extends StatefulWidget{
+  HomeApp({Key key}) : super(key: key);
+
+  @override
+  HomeAppState createState() => HomeAppState();
+}
+
+class HomeAppState extends State{
+
+  var _list = <String>['John Doe', 'Coffe'];
+
+  @override
+  Widget build(BuildContext thisContext) {
+
+    Future _showIt() async {
+      switch(await showDialog(
+        context: thisContext,
+        builder: (BuildContext oneContext){
+          return SimpleDialog(
+            title: Text('What is your favorite food?'),
+            children: [
+              SimpleDialogOption(
+                child: Text('Veggie'),
+                onPressed: (){
+                  Navigator.pop(oneContext, "Veggie");
+                },
+              ),
+              SimpleDialogOption(
+                child: Text('Barbecue'),
+                onPressed: (){
+                  Navigator.pop(oneContext, "Barbecue");
+                },
+              ),
+              SimpleDialogOption(
+                child: Text('Brazilian'),
+                onPressed: (){
+                  Navigator.pop(oneContext, "Brazilian");
+                },
+              ),
+              SimpleDialogOption(
+                child: Text('Italian'),
+                onPressed: (){
+                  Navigator.pop(oneContext, "Italian");
+                },
+              )
+            ],
+          );
+        }
+      )){
+        case 'Veggie': _list = ['Veggies', 'Brocolli'];
+                       break;
+        case 'Barbecue' : _list = ['Meat lovers','Steak'];
+                          break;
+        case 'Brazilian' : _list = ['Brazilians','Beans plus Rice'];
+                           break;
+        case 'Italian' : _list = ['Italians','Pizza'];
+                         break;
+
+      }
+    }
+
+    return Scaffold(
+      body: Align(
+        alignment: Alignment.center,
+        child: Column(
+          children: [
+            Container(height: 250,),
+            RaisedButton(
+              child: Text('Show Dialog'),
+              onPressed: ()async{
+                await _showIt();
+                setState(() {});
+              },
+            ),
+            Container(height: 50,),
+            Text('The favorite food of ${_list[0]} is ${_list[1]}')
+          ],
+        )
+      ),
+    );
+
   }
 }
