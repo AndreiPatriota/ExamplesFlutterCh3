@@ -23,39 +23,43 @@ void main() => runApp(MaterialApp(
 class MyApp extends StatefulWidget{
   MyApp({Key key}) : super(key: key);
 
-  _MyApp createState()=> _MyApp();
+  @override
+  _MyApp createState() => _MyApp();
 }
 
 class _MyApp extends State{
 
-  var _showFirst = true;
-  var _btnLabel = 'Do me!';
+  var _color = Colors.green;
+  var _fontSize = 20.0;
+  var _btnLabel = 'Push Me!';
+  var _btnPushed = false;
 
   @override
   Widget build(BuildContext context) =>
       Scaffold(
         body: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              AnimatedCrossFade(
-                firstChild: FlutterLogo(
-                  style: FlutterLogoStyle.horizontal,
-                  size: 100.0,
-                ),
-                secondChild: FlutterLogo(
-                  style: FlutterLogoStyle.stacked,
-                  size: 100.0,
-                ),
-                crossFadeState: _showFirst?
-                  CrossFadeState.showFirst:
-                  CrossFadeState.showSecond,
-                duration: const Duration(seconds: 2)
+              AnimatedDefaultTextStyle(
+                  child: Text('Text to be changed'),
+                  style: TextStyle(color: _color, fontSize: _fontSize),
+                  duration: const Duration(seconds: 2)
               ),
               RaisedButton(
                 onPressed: (){
-                  _showFirst = !_showFirst;
-                  _btnLabel = _showFirst ?'Do me':'Undo me!';
+                  if(!_btnPushed){
+                    _color = Theme.of(context).primaryTextTheme.title.color;
+                    _fontSize = 40.0;
+                    _btnLabel = 'Unpush me!';
+                    _btnPushed = true;
+                  }
+                  else{
+                    _color = Colors.green;
+                    _fontSize = 20.0;
+                    _btnLabel = 'Push Me!';
+                    _btnPushed = false;
+                  }
                   setState(() {});
                 },
                 child: Text(_btnLabel),
@@ -64,5 +68,4 @@ class _MyApp extends State{
           ),
         ),
       );
-
 }
