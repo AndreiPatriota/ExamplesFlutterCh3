@@ -28,11 +28,8 @@ class MyApp extends StatefulWidget{
 
 class _MyApp extends State{
 
-  var _color = Colors.amber;
-  var _height = 200.0;
-  var _width = 200.0;
-  var _hasBeenActivated = false;
-  var _btnLabel = 'Animate me';
+  var _showFirst = true;
+  var _btnLabel = 'Do me!';
 
   @override
   Widget build(BuildContext context) =>
@@ -41,29 +38,24 @@ class _MyApp extends State{
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              AnimatedContainer(
-                duration: const Duration(seconds: 2),
-                color: _color,
-                width: _width,
-                height: _height,
+              AnimatedCrossFade(
+                firstChild: FlutterLogo(
+                  style: FlutterLogoStyle.horizontal,
+                  size: 100.0,
+                ),
+                secondChild: FlutterLogo(
+                  style: FlutterLogoStyle.stacked,
+                  size: 100.0,
+                ),
+                crossFadeState: _showFirst?
+                  CrossFadeState.showFirst:
+                  CrossFadeState.showSecond,
+                duration: const Duration(seconds: 2)
               ),
-              Container(height: 50,),
               RaisedButton(
                 onPressed: (){
-                  if(!_hasBeenActivated){
-                    _color = Colors.green;
-                    _width = 400.0;
-                    _height = 400.0;
-                    _hasBeenActivated = true;
-                    _btnLabel = 'Take me back!';
-                  }
-                  else{
-                    _color = Colors.amber;
-                    _width = 200.0;
-                    _height = 200.0;
-                    _hasBeenActivated = false;
-                    _btnLabel = 'Animate me!';
-                  }
+                  _showFirst = !_showFirst;
+                  _btnLabel = _showFirst ?'Do me':'Undo me!';
                   setState(() {});
                 },
                 child: Text(_btnLabel),
